@@ -58,7 +58,41 @@
   }
 }
 
+.wmde-markdown ul {
+  list-style-type: disc;
+  padding-left: 25px;
+  color: white;
+}
 
+/* Make sure markdown list markers are visible and match theme foreground */
+.wmde-markdown ul li {
+  display: list-item;
+}
+.wmde-markdown ul li::marker {
+  /* Use theme foreground color (index.css defines --foreground as H S% L%) */
+  color: hsl(var(--foreground));
+  opacity: 1;
+}
+
+/* Fallback: some browsers or markdown renderers hide markers — draw a bullet with ::before */
+.wmde-markdown ul {
+  list-style: none; /* turn off native marker so fallback is consistent */
+  padding-left: 1.25rem;
+}
+.wmde-markdown ul li {
+  position: relative;
+  padding-left: 0.75rem;
+}
+.wmde-markdown ul li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  top: 0.1rem;
+  color: currentColor;
+  font-size: 1rem;
+  line-height: 1;
+  opacity: 1;
+}
 
 @layer base {
   * {
