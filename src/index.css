@@ -94,6 +94,40 @@
   opacity: 1;
 }
 
+/* uiw react-md-editor theming overrides to fit dark app theme */
+.w-md-editor,
+.w-md-editor * {
+  color: hsl(var(--foreground)) !important;
+}
+.w-md-editor {
+  background: transparent !important;
+  border: none !important;
+}
+.w-md-editor .wmde-markdown,
+.w-md-editor .wmde-markdown-color,
+.w-md-editor .wmde-markdown-color > * {
+  background: transparent !important;
+  color: hsl(var(--foreground)) !important;
+}
+.w-md-editor .w-md-editor-text-input,
+.w-md-editor .w-md-editor-text-input textarea,
+.w-md-editor .w-md-editor-preview {
+  background: transparent !important;
+  color: hsl(var(--foreground)) !important;
+}
+.w-md-editor .w-md-editor-toolbar {
+  background: transparent !important;
+  border: none !important;
+}
+.w-md-editor .w-md-editor-toolbar button {
+  color: hsl(var(--foreground)) !important;
+}
+.w-md-editor .wmde-markdown pre,
+.w-md-editor .wmde-markdown code {
+  background: rgba(255,255,255,0.03) !important;
+  color: hsl(var(--foreground)) !important;
+}
+
 @layer base {
   * {
     @apply border-border;

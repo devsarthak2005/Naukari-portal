@@ -14,6 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import ApplyJobDrawer from "@/components/apply-job";
+import ApplicationCard from "@/components/application-card";
 
 // We'll render requirements with a small safe renderer instead of the markdown component
 
@@ -118,6 +119,20 @@ const JobPage = () => {
 
       )}
 
+       {job?.applications?.length > 0 && job?.recruiter_id === user?.id && (
+        <div className="flex flex-col gap-2">
+          <h2 className="font-bold mb-4 text-xl ml-1">Applications</h2>
+          {job?.applications.map((application) => {
+            return (
+              <ApplicationCard key={application.id} application={application} />
+            );
+          })}
+        </div>
+      )}
+
+
+
+
     </div>
   )
 }
@@ -134,24 +149,29 @@ function RequirementsRenderer({ source }) {
   const listLines = lines.filter((l) => /^([-*•])\s+/.test(l));
 
   if (listLines.length === lines.length && listLines.length > 0) {
-    // Render as a list with custom designed bullets
+    // Render all requirements inside a single compact box with custom bullets
     return (
-      <ul className="wmde-markdown bg-transparent sm:text-lg">
-        {lines.map((l, idx) => {
-          const text = l.replace(/^([-*•])\s+/, "");
-          return (
-            <li key={idx} className="mb-3">
-              <div className="flex items-start gap-3">
-                <span
-                  aria-hidden="true"
-                  className="mt-1.5 flex-none w-3 h-3 rounded-full bg-gradient-to-r from-blue-400 to-indigo-600 shadow-md"
-                />
-                <span className="text-base leading-relaxed text-white">{text}</span>
-              </div>
-            </li>
-          );
-        })}
-      </ul>
+      <div className="sm:text-lg">
+        <div
+          style={{ backgroundColor: 'rgba(6,10,14,0.72)', color: 'white' }}
+          className="p-4 rounded-md border border-white/10 max-h-60 overflow-auto"
+        >
+          <div className="flex flex-col gap-2">
+            {lines.map((l, idx) => {
+              const text = l.replace(/^([-*•])\s+/, "");
+              return (
+                <div key={idx} className="flex items-start gap-3">
+                  <span
+                    aria-hidden="true"
+                    className="mt-1 flex-none w-3 h-3 rounded-full bg-gradient-to-r from-indigo-500 to-sky-400 shadow-sm"
+                  />
+                  <div className="text-sm leading-relaxed text-white">{text}</div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
     );
   }
 
