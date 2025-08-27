@@ -10,6 +10,7 @@ import PostJobs from './pages/post-jobs';
 import SavedJobs from './pages/saved-jobs';
 import MyJobs from './pages/my-jobs';
 import { ThemeProvider } from './components/theme-provider';
+import ThemeAwareClerkProvider from './components/theme-aware-clerk';
 
 
 const router = createBrowserRouter([
@@ -73,10 +74,23 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
+  // Import your Publishable Key
+  const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
+
+  if (!PUBLISHABLE_KEY) {
+    console.warn('Missing Clerk Publishable Key. Running without authentication.')
+    return (
+      <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+        <RouterProvider router={router} />
+      </ThemeProvider>
+    )
+  }
 
   return (
-    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <RouterProvider router={router} />
+    <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+      <ThemeAwareClerkProvider publishableKey={PUBLISHABLE_KEY}>
+        <RouterProvider router={router} />
+      </ThemeAwareClerkProvider>
     </ThemeProvider>
   )
 }

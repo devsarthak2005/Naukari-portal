@@ -7,6 +7,7 @@ import { SignedIn, UserButton } from "@clerk/clerk-react"
 import { SignIn } from "@clerk/clerk-react"
 import { BriefcaseBusiness, Heart, Pen } from "lucide-react";
 import { useUser } from "@clerk/clerk-react";
+import { ThemeToggle } from "./theme-toggle";
 
 const Header = () => {
 
@@ -36,6 +37,7 @@ const Header = () => {
         </Link>
 
        <div className="flex gap-8">
+        <ThemeToggle />
         <SignedOut>
         <Button variant="outline" onClick={() => setShowSignIn(true)}>Login</Button>
         </SignedOut>

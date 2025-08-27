@@ -53,7 +53,7 @@ const JobCard = ({
   }, [savedJob]);
 
   return (
-    <Card className="flex flex-col">
+    <Card className="flex flex-col job-card">
       {loadingDeleteJob && (
         <BarLoader className="mt-4" width={"100%"} color="#36d7b7" />
       )}
@@ -78,7 +78,20 @@ const JobCard = ({
           </div>
         </div>
         <hr />
-        {job.description.substring(0, job.description.indexOf("."))}.
+        <p className="text-sm text-gray-400">
+          {(() => {
+            const desc =
+              job.description && job.description.trim() !== "."
+                ? job.description
+                : job.company?.description;
+            if (!desc) return "No description available.";
+            const firstSentenceIndex = desc.indexOf(".");
+            if (firstSentenceIndex > 0) {
+              return desc.substring(0, firstSentenceIndex + 1);
+            }
+            return desc;
+          })()}
+        </p>
       </CardContent>
       <CardFooter className="flex gap-2">
         <Link to={`/job/${job.id}`} className="flex-1">
