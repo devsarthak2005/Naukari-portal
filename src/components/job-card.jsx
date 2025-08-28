@@ -78,7 +78,7 @@ const JobCard = ({
           </div>
         </div>
         <hr />
-        <p className="text-sm text-gray-400">
+        <p className="text-sm text-gray-600 dark:text-gray-400">
           {(() => {
             const desc =
               job.description && job.description.trim() !== "."
@@ -95,7 +95,10 @@ const JobCard = ({
       </CardContent>
       <CardFooter className="flex gap-2">
         <Link to={`/job/${job.id}`} className="flex-1">
-          <Button variant="secondary" className="w-full">
+          <Button 
+            variant="secondary" 
+            className="w-full bg-blue-100 hover:bg-blue-200 text-blue-700 border-blue-300 dark:bg-secondary dark:text-secondary-foreground dark:hover:bg-secondary/80 dark:border-transparent"
+          >
             More Details
           </Button>
         </Link>

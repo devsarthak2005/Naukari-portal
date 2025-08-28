@@ -1,6 +1,6 @@
 import { getJobs } from "@/api/apiJobs";
 import useFetch from "@/hooks/use-fetch";
-import { useEffect,useState } from "react";
+import { useEffect,useState, useMemo } from "react";
 import { useUser } from "@clerk/clerk-react";
 import { BarLoader } from "react-spinners";
 import JobCard from "@/components/job-card";
@@ -9,6 +9,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectTrigger, SelectValue,SelectContent, SelectGroup, SelectLabel, SelectItem } from "@/components/ui/select";
 import { City, State } from "country-state-city";
+import Pagination from "@/components/ui/pagination";
+import { Search } from "lucide-react";
 
 
 const JobListing = () => 
@@ -17,6 +19,8 @@ const JobListing = () =>
   const [searchQuery, setSearchQuery] = useState("");
   const [location, setLocation] = useState("");
   const [company_id, setCompany_id] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6; // Number of jobs per page
 
 
  const { isLoaded } = useUser();
@@ -50,6 +54,26 @@ const JobListing = () =>
     }
   }, [isLoaded,location, company_id, searchQuery]);
 
+  // Reset to first page when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [location, company_id, searchQuery]);
+
+  // Calculate paginated jobs
+  const paginatedJobs = useMemo(() => {
+    if (!jobs) return [];
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return jobs.slice(startIndex, endIndex);
+  }, [jobs, currentPage, itemsPerPage]);
+
+  const totalPages = Math.ceil((jobs?.length || 0) / itemsPerPage);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
     if (!isLoaded) {
     return <BarLoader className="mb-4" width={"100%"} color="#36d7b7" />;
   }
@@ -58,6 +82,7 @@ const JobListing = () =>
     setSearchQuery("");
     setCompany_id("");
     setLocation("");
+    setCurrentPage(1);
   };
 
   const handleSearch = (e) => {
@@ -83,8 +108,12 @@ const JobListing = () =>
         name="search-query"
         className="h-full flex-1  px-4 text-md"
         />
-         <Button type="submit" className="h-full sm:w-28" variant="blue">
-          Search
+         <Button 
+          type="submit" 
+          className="h-14 w-14 p-0 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105" 
+          variant="default"
+        >
+          <Search className="h-5 w-5 text-white" />
         </Button>
       </form>
 
@@ -144,8 +173,8 @@ const JobListing = () =>
 
        {loadingJobs === false && (
         <div className="mt-8 grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {jobs?.length ? (
-            jobs.map((job) => {
+          {paginatedJobs?.length ? (
+            paginatedJobs.map((job) => {
               return <JobCard key={job.id} job={job} 
               savedInit = {job.saved?.length > 0}
               />;
@@ -156,6 +185,17 @@ const JobListing = () =>
             </div>
           )}
         </div>
+      )}
+
+      {/* Pagination Component */}
+      {loadingJobs === false && jobs?.length > 0 && (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+          itemsPerPage={itemsPerPage}
+          totalItems={jobs?.length || 0}
+        />
       )}
     </div>
   )
